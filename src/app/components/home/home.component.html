@@ -1,0 +1,93 @@
+<div class="container py-4">
+  <!-- Hero Section -->
+  <div class="row align-items-center mb-5 p-4 p-md-5 rounded-4 shadow-lg text-white bg-purple-gradient hero-card">
+    <div class="col-lg-8">
+      <h1 class="display-4 fw-bold mb-3">Master Your Financial Freedom 🚀</h1>
+      <p class="lead opacity-90 mb-4">Track, analyze, and manage your daily expenses with ease using our smart purple assistant.</p>
+      <div class="d-flex gap-3 flex-wrap">
+        <a routerLink="/add-expense" class="btn btn-light btn-lg px-4 rounded-pill fw-bold text-purple shadow-sm">
+          <i class="bi bi-plus-circle-fill me-2"></i>Add New Expense
+        </a>
+        <a routerLink="/expenses" class="btn btn-outline-light btn-lg px-4 rounded-pill fw-semibold">
+          <i class="bi bi-list-task me-2"></i>View History
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-4 d-none d-lg-block text-center fs-1 opacity-75">
+      💎 📊 💳
+    </div>
+  </div>
+
+  <!-- Quick Stats Cards -->
+  <div class="row g-4">
+    <!-- Remaining Budget / Dynamic Balance Card -->
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card position-relative">
+        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+          <div class="icon-circle bg-purple-light mb-3 mx-auto">
+            <i class="bi bi-wallet2 text-purple fs-3"></i>
+          </div>
+          
+          <h5 class="card-title text-muted fw-semibold mb-1">Remaining Budget</h5>
+          
+          <!-- عرض المبلغ المتبقي بعد الخصم تلقائياً -->
+          @if (!isEditingBudget) {
+            <h2 class="fw-bold text-purple my-2">
+              {{ expenseService.remainingBudget() | currency:'USD':'symbol':'1.2-2' }}
+            </h2>
+            <div class="d-flex align-items-center gap-1">
+              <small class="text-muted">Total Budget: {{ expenseService.totalBudget() | currency:'USD':'symbol':'1.0-0' }}</small>
+              <button (click)="enableBudgetEdit()" class="btn btn-link text-purple p-0 ms-1" title="Set Budget">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </div>
+          } @else {
+            <!-- فورم إضافة/تعديل الميزانية الكلية -->
+            <div class="input-group input-group-sm my-2" style="max-width: 200px;">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" [(ngModel)]="newBudgetInput" placeholder="Budget" />
+              <button (click)="saveBudget()" class="btn btn-purple-gradient text-white" type="button">
+                <i class="bi bi-check-lg"></i>
+              </button>
+              <button (click)="cancelBudgetEdit()" class="btn btn-light" type="button">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+          }
+
+          <small class="text-success mt-2">
+            <i class="bi bi-arrow-down-right me-1"></i>Spent: {{ expenseService.totalSpent() | currency:'USD':'symbol':'1.2-2' }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Categories -->
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+        <div class="card-body">
+          <div class="icon-circle bg-purple-light mb-3 mx-auto">
+            <i class="bi bi-tags text-purple fs-3"></i>
+          </div>
+          <h5 class="card-title text-muted fw-semibold">Categories</h5>
+          <h2 class="fw-bold text-purple my-2">6 Active</h2>
+          <small class="text-muted">Food, Tech, Travel & more</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Smart Assistant -->
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-3 stat-card">
+        <div class="card-body">
+          <div class="icon-circle bg-purple-light mb-3 mx-auto">
+            <i class="bi bi-robot text-purple fs-3"></i>
+          </div>
+          <h5 class="card-title text-muted fw-semibold">AI Smart Assistant</h5>
+          <h2 class="fw-bold text-purple my-2">Ready 🤖</h2>
+          <small class="text-purple fw-semibold">Click bottom right icon to chat</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

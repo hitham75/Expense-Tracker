@@ -1,0 +1,116 @@
+/* Glassmorphism & Gradient Navbar */
+.custom-navbar {
+  background: linear-gradient(135deg, rgba(76, 29, 149, 0.95), rgba(126, 34, 206, 0.95));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(76, 29, 149, 0.25);
+  padding: 0.8rem 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Brand Logo Styling & Animation */
+.brand-icon {
+  font-size: 1.6rem;
+  display: inline-block;
+  animation: pulseIcon 2.5s infinite ease-in-out;
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff, #e9d5ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Nav Links & Hover Animation */
+.custom-link {
+  color: #e9d5ff !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.custom-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #c084fc;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.custom-link:hover::after,
+.custom-link.active::after {
+  width: 70%;
+}
+
+.custom-link:hover, 
+.custom-link.active {
+  color: #ffffff !important;
+}
+
+/* Add Expense Button Animation */
+.btn-add-expense {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-add-expense:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(168, 85, 247, 0.5);
+  background: linear-gradient(135deg, #9333ea, #6b21a8);
+  color: #ffffff;
+}
+
+.btn-add-expense:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.plus-icon {
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.btn-add-expense:hover .plus-icon {
+  transform: rotate(90deg);
+}
+
+/* Mobile Toggler Styling */
+.custom-toggler {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.4rem 0.6rem;
+}
+
+.custom-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(168, 85, 247, 0.4);
+}
+
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.content-wrapper {
+  margin-top: 90px;
+}
+
+/* Keyframe Animations */
+@keyframes pulseIcon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15) rotate(5deg); }
+}

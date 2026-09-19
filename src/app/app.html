@@ -1,0 +1,43 @@
+<nav class="navbar navbar-expand-lg bg-purple-gradient navbar-dark shadow-sm py-3">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" routerLink="/home">
+      <span class="fs-3">💰</span> ExpenseTracker
+    </a>
+
+    <button 
+      class="navbar-toggler border-0" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center gap-2">
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded-pill" routerLink="/home" routerLinkActive="active">
+            <i class="bi bi-house-door me-1"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 rounded-pill" routerLink="/expenses" routerLinkActive="active">
+            <i class="bi bi-receipt-cutoff me-1"></i> Expenses List
+          </a>
+        </li>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-light text-purple rounded-pill px-4 fw-semibold shadow-sm" routerLink="/add-expense">
+            <i class="bi bi-plus-lg me-1"></i> Add Expense
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- View Container -->
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Chatbot -->
+<app-chatbot></app-chatbot>
