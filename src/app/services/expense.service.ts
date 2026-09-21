@@ -1,70 +1,74 @@
-import { Injectable, signal, inject, computed } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Expense } from '../models/expense.model';
-import { tap } from 'rxjs/operators';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ExpenseService {
-  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/expenses';
 
   expenses = signal<Expense[]>([]);
-  
-  // حفظ الميزانية الكلية في localStorage للحفاظ عليها
-  totalBudget = signal<number>(
-    Number(localStorage.getItem('totalBudget')) || 2000
-  );
+  isLoading = signal<boolean>(false);
+  errorMessage = signal<string | null>(null);
+  totalBudget = signal<number>(2000);
 
-  // إجمالي المصاريف الحالية
   totalSpent = computed(() => {
-    return this.expenses().reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+    return this.expenses().reduce((sum, item) => sum + Number(item.amount || 0), 0);
   });
 
-  // المتبقي من الميزانية (الميزانية الكلية - المصاريف)
   remainingBudget = computed(() => {
     return this.totalBudget() - this.totalSpent();
   });
 
-  // تحديث الميزانية الكلية
-  setTotalBudget(amount: number): void {
-    this.totalBudget.set(amount);
-    localStorage.setItem('totalBudget', amount.toString());
+  constructor(private http: HttpClient) {
+    this.loadExpenses();
   }
 
   loadExpenses(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
     this.http.get<Expense[]>(this.apiUrl).subscribe({
-      next: (data) => this.expenses.set(data),
-      error: (err) => console.error('Error fetching expenses:', err)
+      next: (data: Expense[]) => {
+        this.expenses.set(data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Failed to fetch expenses. Make sure json-server is running.');
+        this.isLoading.set(false);
+      }
     });
   }
 
-  getExpenseById(id: string | number) {
+  getExpenseById(id: string | number): Observable<Expense> {
     return this.http.get<Expense>(`${this.apiUrl}/${id}`);
   }
 
-  addExpense(expense: Omit<Expense, 'id'>) {
-    return this.http.post<Expense>(this.apiUrl, expense).pipe(
-      tap((newExpense) => {
-        this.expenses.update(items => [...items, newExpense]);
-      })
-    );
+  addExpense(payload: Omit<Expense, 'id'> | Expense): Observable<Expense> {
+    return this.http.post<Expense>(this.apiUrl, payload);
   }
 
-  updateExpense(id: string | number, expense: Partial<Expense>) {
-    return this.http.put<Expense>(`${this.apiUrl}/${id}`, expense).pipe(
-      tap((updated) => {
-        this.expenses.update(items => 
-          items.map(item => String(item.id) === String(id) ? updated : item)
-        );
-      })
-    );
+  updateExpense(id: string | number, payload: Partial<Expense>): Observable<Expense> {
+    return this.http.put<Expense>(`${this.apiUrl}/${id}`, payload);
   }
 
-  deleteExpense(id: string | number) {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
-      tap(() => {
-        this.expenses.update(items => items.filter(item => String(item.id) !== String(id)));
-      })
-    );
+  deleteExpense(id: string | number): void {
+    this.isLoading.set(true);
+    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this.expenses.update(prev => prev.filter(e => e.id !== id));
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Failed to delete expense.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  setTotalBudget(newBudget: number): void {
+    this.totalBudget.set(newBudget);
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ExpenseService } from '../../services/expense.service';
@@ -7,7 +7,7 @@ import { ExpenseService } from '../../services/expense.service';
 @Component({
   selector: 'app-expense-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CurrencyPipe, DatePipe, DecimalPipe],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './expense-list.component.html'
 })
 export class ExpenseListComponent implements OnInit {
@@ -15,30 +15,49 @@ export class ExpenseListComponent implements OnInit {
 
   searchTerm = signal('');
   selectedCategory = signal('');
+  currentPage = signal<number>(1);
+  itemsPerPage = signal<number>(5);
 
-  // دالة الحساب للتصفية المباشرة بناءً على السيرش والـ Category
   filteredExpenses = computed(() => {
     const list = this.expenseService.expenses();
     const search = this.searchTerm().trim().toLowerCase();
     const category = this.selectedCategory();
 
     return list.filter(item => {
-      const matchesSearch = !search || item.title.toLowerCase().includes(search);
+      const matchesSearch = !search || item.title?.toLowerCase().includes(search) || item.note?.toLowerCase().includes(search);
       const matchesCategory = !category || item.category === category;
       return matchesSearch && matchesCategory;
     });
   });
 
-  ngOnInit(): void {
-    this.expenseService.loadExpenses();
-  }
+  paginatedExpenses = computed(() => {
+    const filtered = this.filteredExpenses();
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    return filtered.slice(start, start + this.itemsPerPage());
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.filteredExpenses().length / this.itemsPerPage()) || 1;
+  });
+
+  ngOnInit(): void {}
 
   deleteExpense(id: string | number | undefined): void {
     if (!id) return;
     if (confirm('Are you sure you want to delete this expense?')) {
-      this.expenseService.deleteExpense(id).subscribe({
-        error: (err) => console.error('Error deleting expense:', err)
-      });
+      this.expenseService.deleteExpense(id);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
     }
   }
 }
