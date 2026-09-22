@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Expense } from '../models/expense.model';
 
 @Injectable({
@@ -35,7 +35,8 @@ export class ExpenseService {
         this.expenses.set(data);
         this.isLoading.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error('Fetch expenses error:', err);
         this.errorMessage.set('Failed to fetch expenses. Make sure json-server is running.');
         this.isLoading.set(false);
       }
@@ -43,22 +44,20 @@ export class ExpenseService {
   }
 
   getExpenseById(id: string | number): Observable<Expense> {
-    return this.http.get<Expense>(`${this.apiUrl}/${id}`);
+    return this.http.get<Expense>(`${this.apiUrl}/${id}`).pipe(
+      catchError((error) => throwError(() => error))
+    );
   }
 
-  addExpense(payload: Omit<Expense, 'id'> | Partial<Expense>): Observable<Expense> {
+  addExpense(payload: Partial<Expense>): Observable<Expense> {
     return this.http.post<Expense>(this.apiUrl, payload).pipe(
-      tap((newExpense: Expense) => {
-        this.expenses.update(prev => [...prev, newExpense]);
-      })
+      catchError((error) => throwError(() => error))
     );
   }
 
   updateExpense(id: string | number, payload: Partial<Expense>): Observable<Expense> {
     return this.http.put<Expense>(`${this.apiUrl}/${id}`, payload).pipe(
-      tap((updatedExpense: Expense) => {
-        this.expenses.update(prev => prev.map(e => e.id === id ? updatedExpense : e));
-      })
+      catchError((error) => throwError(() => error))
     );
   }
 
@@ -69,8 +68,9 @@ export class ExpenseService {
         this.expenses.update(prev => prev.filter(e => e.id !== id));
         this.isLoading.set(false);
       },
-      error: () => {
-        this.errorMessage.set('Failed to delete expense.');
+      error: (err) => {
+        console.error('Delete error:', err);
+        this.errorMessage.set('Failed to delete expense. Check server status.');
         this.isLoading.set(false);
       }
     });

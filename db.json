@@ -15,6 +15,46 @@
       "date": "2026-09-25",
       "note": "",
       "id": "1c-nFSdJtaQ"
+    },
+    {
+      "title": "ghff",
+      "amount": 90,
+      "category": "Transport",
+      "date": "7878-09-09",
+      "note": "ttuy",
+      "id": "NdJHxTTR4hw"
+    },
+    {
+      "title": "عع",
+      "amount": 443.91,
+      "category": "Shopping",
+      "date": "2026-09-13",
+      "note": "",
+      "id": "G5w7_pjGAPY"
+    },
+    {
+      "title": "مم",
+      "amount": 77,
+      "category": "Shopping",
+      "date": "2026-09-19",
+      "note": "",
+      "id": "-T1J8V_NKew"
+    },
+    {
+      "title": "99",
+      "amount": 66,
+      "category": "Shopping",
+      "date": "2026-09-12",
+      "note": "",
+      "id": "1oX_iNbiIU0"
+    },
+    {
+      "title": "ههه",
+      "amount": 44,
+      "category": "Transport",
+      "date": "2026-09-25",
+      "note": "",
+      "id": "YUBJoJ4w9pQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

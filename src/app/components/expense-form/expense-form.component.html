@@ -1,6 +1,5 @@
 <div class="container py-5 d-flex justify-content-center">
   <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white style-card">
-    <!-- Header -->
     <div class="d-flex align-items-center gap-3 mb-4">
       <div class="icon-box bg-purple-subtle text-purple rounded-circle p-3 d-flex align-items-center justify-content-center">
         <i class="bi" [ngClass]="isEditMode ? 'bi-pencil-square fs-3' : 'bi-plus-circle-fill fs-3'"></i>
@@ -13,119 +12,118 @@
       </div>
     </div>
 
-    <!-- Error Alert Message -->
     @if (errorMessage) {
       <div class="alert alert-danger border-0 rounded-3 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
         {{ errorMessage }}
       </div>
     }
 
-    <form (ngSubmit)="onSubmit()">
-      <!-- Title -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold text-secondary">Title</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-            <i class="bi bi-tag"></i>
-          </span>
-          <input 
-            type="text" 
-            class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
-            placeholder="e.g. Grocery Shopping"
-            [(ngModel)]="expenseData.title" 
-            name="title" 
-            required 
-          />
+    @if (isLoading && isEditMode && !expenseData.title) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-purple" role="status">
+          <span class="visually-hidden">Loading expense details...</span>
         </div>
       </div>
-
-      <!-- Category -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold text-secondary">Category</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-            <i class="bi bi-grid"></i>
-          </span>
-          <select 
-            class="form-select bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
-            [(ngModel)]="expenseData.category" 
-            name="category" 
-            required>
-            <option value="Food">🍔 Food</option>
-            <option value="Transport">🚗 Transport</option>
-            <option value="Shopping">🛍️ Shopping</option>
-            <option value="Bills">💡 Bills</option>
-            <option value="Entertainment">🎬 Entertainment</option>
-            <option value="Other">📦 Other</option>
-          </select>
+    } @else {
+      <form (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-secondary">Title</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+              <i class="bi bi-tag"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none"
+              placeholder="e.g. Grocery Shopping"
+              [(ngModel)]="expenseData.title"
+              name="title"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- Amount -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold text-secondary">Amount ($)</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-            <i class="bi bi-currency-dollar"></i>
-          </span>
-          <input 
-            type="number" 
-            step="0.01" 
-            class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
-            placeholder="0.00"
-            [(ngModel)]="expenseData.amount" 
-            name="amount" 
-            required 
-          />
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-secondary">Category</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+              <i class="bi bi-grid"></i>
+            </span>
+            <select
+              class="form-select bg-light border-start-0 rounded-end-3 py-2 shadow-none"
+              [(ngModel)]="expenseData.category"
+              name="category">
+              <option value="" disabled selected>Select category</option>
+              <option value="Food">🍔 Food</option>
+              <option value="Transport">🚗 Transport</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Bills">💡 Bills</option>
+              <option value="Entertainment">🎬 Entertainment</option>
+              <option value="Other">📦 Other</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <!-- Date -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold text-secondary">Date</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-            <i class="bi bi-calendar-event"></i>
-          </span>
-          <input 
-            type="date" 
-            class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
-            [(ngModel)]="expenseData.date" 
-            name="date" 
-            required 
-          />
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-secondary">Amount ($)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+              <i class="bi bi-currency-dollar"></i>
+            </span>
+            <input
+              type="number"
+              step="0.01"
+              class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none"
+              placeholder="0.00"
+              [(ngModel)]="expenseData.amount"
+              name="amount"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- Note (optional) -->
-      <div class="mb-4">
-        <label class="form-label fw-semibold text-secondary">Note (optional)</label>
-        <div class="input-group">
-          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-            <i class="bi bi-sticky"></i>
-          </span>
-          <textarea 
-            class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
-            rows="2" 
-            placeholder="Additional details..."
-            [(ngModel)]="expenseData.note" 
-            name="note">
-          </textarea>
+        <div class="mb-3">
+          <label class="form-label fw-semibold text-secondary">Date</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+              <i class="bi bi-calendar-event"></i>
+            </span>
+            <input
+              type="date"
+              class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none"
+              [(ngModel)]="expenseData.date"
+              name="date"
+            />
+          </div>
         </div>
-      </div>
 
-      <!-- Actions -->
-      <div class="d-flex justify-content-end gap-2 pt-2">
-        <button type="button" (click)="onCancel()" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-secondary">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-purple-gradient text-white rounded-pill px-4 py-2 fw-semibold shadow-sm" [disabled]="isLoading">
-          @if (isLoading) {
-            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-          }
-          {{ isEditMode ? 'Update Expense' : 'Save Expense' }}
-        </button>
-      </div>
-    </form>
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary">Note (optional)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+              <i class="bi bi-sticky"></i>
+            </span>
+            <textarea
+              class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none"
+              rows="2"
+              placeholder="Additional details..."
+              [(ngModel)]="expenseData.note"
+              name="note">
+            </textarea>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-2">
+          <button type="button" (click)="onCancel()" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-secondary">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-purple-gradient text-white rounded-pill px-4 py-2 fw-semibold shadow-sm" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            }
+            {{ isEditMode ? 'Update Expense' : 'Save Expense' }}
+          </button>
+        </div>
+      </form>
+    }
   </div>
 </div>
