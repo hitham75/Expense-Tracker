@@ -1,9 +1,10 @@
-<<<<<<< HEAD
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "rootDir": "./",
     "types": []
   },
   "include": [
@@ -13,19 +14,3 @@
     "src/**/*.spec.ts"
   ]
 }
-=======
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": []
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts"
-  ]
-}
->>>>>>> c46657f58dc71acd7f326cb526d3403e2294ff3e

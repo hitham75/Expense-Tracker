@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Expense } from '../models/expense.model';
 
 @Injectable({
@@ -46,12 +46,20 @@ export class ExpenseService {
     return this.http.get<Expense>(`${this.apiUrl}/${id}`);
   }
 
-  addExpense(payload: Omit<Expense, 'id'> | Expense): Observable<Expense> {
-    return this.http.post<Expense>(this.apiUrl, payload);
+  addExpense(payload: Omit<Expense, 'id'> | Partial<Expense>): Observable<Expense> {
+    return this.http.post<Expense>(this.apiUrl, payload).pipe(
+      tap((newExpense: Expense) => {
+        this.expenses.update(prev => [...prev, newExpense]);
+      })
+    );
   }
 
   updateExpense(id: string | number, payload: Partial<Expense>): Observable<Expense> {
-    return this.http.put<Expense>(`${this.apiUrl}/${id}`, payload);
+    return this.http.put<Expense>(`${this.apiUrl}/${id}`, payload).pipe(
+      tap((updatedExpense: Expense) => {
+        this.expenses.update(prev => prev.map(e => e.id === id ? updatedExpense : e));
+      })
+    );
   }
 
   deleteExpense(id: string | number): void {

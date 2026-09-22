@@ -19,6 +19,9 @@ export class ExpenseFormComponent implements OnInit {
   expenseId: string | number | null = null;
   isEditMode = false;
 
+  isLoading = false;
+  errorMessage: string | null = null;
+
   expenseData = {
     title: '',
     category: '' as ExpenseCategory | string,
@@ -32,6 +35,8 @@ export class ExpenseFormComponent implements OnInit {
     if (idParam) {
       this.expenseId = idParam;
       this.isEditMode = true;
+      this.isLoading = true;
+
       this.expenseService.getExpenseById(idParam).subscribe({
         next: (data: Expense) => {
           this.expenseData = {
@@ -41,8 +46,12 @@ export class ExpenseFormComponent implements OnInit {
             date: data.date,
             note: data.note || ''
           };
+          this.isLoading = false;
         },
-        error: (err: unknown) => console.error('Error fetching expense:', err)
+        error: () => {
+          this.errorMessage = 'Something went wrong loading this expense.';
+          this.isLoading = false;
+        }
       });
     }
   }
@@ -51,6 +60,9 @@ export class ExpenseFormComponent implements OnInit {
     if (!this.expenseData.title || !this.expenseData.amount || !this.expenseData.category || !this.expenseData.date) {
       return;
     }
+
+    this.isLoading = true;
+    this.errorMessage = null;
 
     const payload = {
       title: this.expenseData.title,
@@ -63,19 +75,32 @@ export class ExpenseFormComponent implements OnInit {
     if (this.isEditMode && this.expenseId) {
       this.expenseService.updateExpense(this.expenseId, payload).subscribe({
         next: () => {
+          this.isLoading = false;
           this.expenseService.loadExpenses();
           this.router.navigate(['/expenses']);
         },
-        error: (err: unknown) => console.error('Error updating expense:', err)
+        error: () => {
+          this.isLoading = false;
+          this.errorMessage = 'Something went wrong saving this expense.';
+        }
       });
     } else {
       this.expenseService.addExpense(payload).subscribe({
         next: () => {
+          this.isLoading = false;
           this.expenseService.loadExpenses();
           this.router.navigate(['/expenses']);
         },
-        error: (err: unknown) => console.error('Error adding expense:', err)
+        error: () => {
+          this.isLoading = false;
+          this.errorMessage = 'Something went wrong saving this expense.';
+        }
       });
     }
+  }
+
+  onCancel(): void {
+    this.errorMessage = null;
+    this.router.navigate(['/expenses']);
   }
 }

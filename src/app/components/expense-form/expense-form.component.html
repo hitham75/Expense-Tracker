@@ -13,6 +13,13 @@
       </div>
     </div>
 
+    <!-- Error Alert Message -->
+    @if (errorMessage) {
+      <div class="alert alert-danger border-0 rounded-3 mb-4" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
+
     <form (ngSubmit)="onSubmit()">
       <!-- Title -->
       <div class="mb-3">
@@ -74,7 +81,7 @@
       </div>
 
       <!-- Date -->
-      <div class="mb-4">
+      <div class="mb-3">
         <label class="form-label fw-semibold text-secondary">Date</label>
         <div class="input-group">
           <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
@@ -90,12 +97,32 @@
         </div>
       </div>
 
+      <!-- Note (optional) -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold text-secondary">Note (optional)</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+            <i class="bi bi-sticky"></i>
+          </span>
+          <textarea 
+            class="form-control bg-light border-start-0 rounded-end-3 py-2 shadow-none" 
+            rows="2" 
+            placeholder="Additional details..."
+            [(ngModel)]="expenseData.note" 
+            name="note">
+          </textarea>
+        </div>
+      </div>
+
       <!-- Actions -->
       <div class="d-flex justify-content-end gap-2 pt-2">
-        <a routerLink="/expenses" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-secondary">
+        <button type="button" (click)="onCancel()" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-secondary">
           Cancel
-        </a>
-        <button type="submit" class="btn btn-purple-gradient text-white rounded-pill px-4 py-2 fw-semibold shadow-sm">
+        </button>
+        <button type="submit" class="btn btn-purple-gradient text-white rounded-pill px-4 py-2 fw-semibold shadow-sm" [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          }
           {{ isEditMode ? 'Update Expense' : 'Save Expense' }}
         </button>
       </div>
